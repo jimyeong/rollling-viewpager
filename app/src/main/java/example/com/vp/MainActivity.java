@@ -16,29 +16,32 @@ import java.util.TimerTask;
 import example.com.vp.adaptor.RVPadaptor;
 import example.com.vp.base.BaseActivity;
 import example.com.vp.model.Color;
+import example.com.vp.model.RollingViewPagerConfig;
 
-// 재미잇을 정도로 말고 지겨울 정도로,,
 
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
     // 변수들 가져와서 그냥쓰면 안되고, 여기서 한번 다 새로 변수에 담아줘야 한다.
     // loose coupling 을 위해서
+    RollingViewPagerConfig config = new RollingViewPagerConfig(4000, 3000, 4);
     private ViewPager vp;
-    private List<Color> data = new ArrayList<>();
-    private RVPadaptor rvPadaptor;
     private int PAGE_NUMBER = Color.getNumberOfColor();
-    private int DELAYED_TIME = 3000;
-    private int DURATION = 1000;
+    private int DELAYED_TIME = config.getDELAYED_TIME();
+    private int DURATION = config.getDURATION_TIME();
     private Handler handler;
     private Timer timer;
-
+    private RVPadaptor rvPadaptor;
+    private List<Color> data = new ArrayList<>();
     private int CURRENT_PAGE = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         vp= findViewById(R.id.vp);
+        vp.addOnPageChangeListener(this);
 
-        rvPadaptor = new RVPadaptor(this, createData());
+        rvPadaptor = new RVPadaptor(config,
+                this,
+                createData());
     }
     @Override
     protected void onStart() {
@@ -53,6 +56,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         return this.data;
     }
     private void createSlide(){
+        // 생성하면, 스레드가 한개가 생성되고
+        // 메시지 큐를 가진다.
         handler = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
@@ -72,7 +77,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 handler.post(runnable);
             }
         }, DELAYED_TIME, DURATION);
-
     }
     public void initSlide(){
         if(handler != null){
@@ -81,13 +85,9 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         }
     }
 
-
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
         this.CURRENT_PAGE = position;
-        initSlide();
-
     }
 
     @Override

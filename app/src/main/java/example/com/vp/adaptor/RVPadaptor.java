@@ -16,6 +16,7 @@ import java.util.List;
 import example.com.vp.MainActivity;
 import example.com.vp.R;
 import example.com.vp.model.Color;
+import example.com.vp.model.RollingViewPagerConfig;
 
 public class RVPadaptor extends PagerAdapter {
     private Context context;
@@ -23,24 +24,24 @@ public class RVPadaptor extends PagerAdapter {
     private LayoutInflater llf;
     private int CURRENT_POSITION = 0;
     private int PAGE_NUMBER = Integer.MAX_VALUE;
+    private int NUMBER_REPUTATION = 0;
 
 
-    public RVPadaptor(Context context, List<? extends Color> list) {
+    public RVPadaptor(RollingViewPagerConfig config, Context context, List<? extends Color> list) {
         llf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = context;
         this.viewData = list;
+        this.NUMBER_REPUTATION = config.getTOTAL_PAGE();
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         // slide page 랑 연관이 되있음
-        if (this.CURRENT_POSITION == PAGE_NUMBER) {
-            this.CURRENT_POSITION = 0;
+        if (position == PAGE_NUMBER) {
+            position = 0;
         };
-        this.CURRENT_POSITION++;
-        int slideNumber = this.CURRENT_POSITION%4;
-
+        int slideNumber = position%this.NUMBER_REPUTATION;
         Color color = this.viewData.get(slideNumber);
         View itemView = llf.inflate(R.layout.view_pager_item, container, false);
         // to use color hex value
