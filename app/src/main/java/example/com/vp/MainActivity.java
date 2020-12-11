@@ -20,8 +20,7 @@ import example.com.vp.model.RollingViewPagerConfig;
 
 
 public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
-    // 변수들 가져와서 그냥쓰면 안되고, 여기서 한번 다 새로 변수에 담아줘야 한다.
-    // loose coupling 을 위해서
+    // set the variables here for loose coupling
     RollingViewPagerConfig config = new RollingViewPagerConfig(4000, 3000, 4);
     private ViewPager vp;
     private int PAGE_NUMBER = Color.getNumberOfColor();
@@ -49,15 +48,16 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
         vp.setAdapter(rvPadaptor);
         createSlide();
     }
+
+    // the function for creating data I am planning to use
     private List<Color> createData(){
         for (int i=0; i < PAGE_NUMBER; i++){
             data.add( new Color(i));
         }
         return this.data;
     }
+
     private void createSlide(){
-        // 생성하면, 스레드가 한개가 생성되고
-        // 메시지 큐를 가진다.
         handler = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
@@ -78,6 +78,8 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             }
         }, DELAYED_TIME, DURATION);
     }
+
+    // the function for the initializing
     public void initSlide(){
         if(handler != null){
             handler.removeMessages(0);
@@ -87,6 +89,7 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // because it could be scrolled by people using it, I had to syncronize the page variable that is being used
         this.CURRENT_PAGE = position;
     }
 

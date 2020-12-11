@@ -51,7 +51,7 @@ public class RVPadaptor extends PagerAdapter {
         return itemView;
     }
 
-    // 무한번으로 돌리고 싶으면 여기에 INTEGER_MAX_VALUE를 넣으면 된다.
+    // if you don't want to see it rewind back to the begining, it should return Integer.MAX_VALUE
     @Override
     public int getCount() {
         return PAGE_NUMBER;
