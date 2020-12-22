@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class RollingViewPager extends FrameLayout implements ViewPager.OnPageChangeListener {
+
     private int DURATION = 0;
     private int PAGE_NUMBER = 0;
     private LayoutInflater lif;
